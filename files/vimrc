@@ -43,7 +43,7 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-let g:syntastic_python_checkers = ['flake8', 'mccabe']
+let g:syntastic_python_checkers = ['pyflakes']
 let g:syntastic_python_flake8_args='--builtin=_'
 let g:syntastic_check_on_open = 1                  " run syntastic check on file open
 let g:syntastic_aggregate_errors = 1               " run all checkers and aggregate results

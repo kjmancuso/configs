@@ -1,4 +1,7 @@
 terraform
 =========
+Sample usage
 
-curl https://raw.githubusercontent.com/kremlinkev/configs/master/terraform.sh | bash
+```
+ansible-playbook -i 'root@172.16.255.0,' bootstrap.yaml -v
+```

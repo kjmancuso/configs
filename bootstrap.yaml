@@ -1,0 +1,74 @@
+---
+
+- name: Bootstrap a node
+  hosts: all
+  gather_facts: false
+
+  vars_files:
+    - vars/packages.yml
+
+  tasks:
+    - name: Upgrade Packages
+      apt: upgrade=dist update_cache=yes dpkg_options='force-confold,force-confdef'
+      register: apt_upgrade
+      notify:
+        - restart server
+      changed_when: "'linux-image' in apt_upgrade.msg"
+
+    - name: Enable periodic security updates
+      copy: src=files/apt-02periodic
+            dest=/etc/apt/apt.conf.d/02periodic
+            owner=root group=root mode=0644
+
+    - name: Install packages
+      apt: pkg={{ item }} state=latest
+      with_flattened:
+        - packages
+        # - daemons
+
+    # - name: Enable daemons
+    #   service: name={{ item }} enabled=yes
+    #   with_items: daemons
+
+    - name: Add myself
+      user: name=kevin shell=/bin/bash groups=sudo append=yes
+
+    - name: Retrieve existing key
+      shell: grep ^ssh /root/.ssh/authorized_keys
+      register: auth_key
+
+    - name: Install retrieved key
+      authorized_key: user=kevin key="{{ auth_key.stdout }}"
+
+    - name: Enable NOPASSWD for sudo group
+      lineinfile: dest=/etc/sudoers state=present regexp='^%sudo ALL\=' line='%sudo ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
+
+    - name: Disallow root login
+      lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+      notify: restart ssh
+
+  handlers:
+    - name: restart server
+      command: /sbin/reboot -t now
+
+    - name: restart ssh
+      service: name=ssh state=restarted
+
+- name: Do user specific stuff
+  hosts: all
+  gather_facts: false
+  sudo: yes
+  sudo_user: kevin
+
+  tasks:
+    - name: Copy vimrc over
+      copy: src=files/vimrc
+            dest=/home/kevin/.vimrc
+            owner=kevin group=kevin mode=0644
+
+    - name: Clone gmarik/Vundle into .vim
+      git: repo=https://github.com/gmarik/Vundle.vim.git 
+           dest=/home/kevin/.vim/bundle/Vundle.vim
+
+    - name: Install vundle plugin
+      shell: vim +PluginInstall +qall

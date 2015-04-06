@@ -1,0 +1,16 @@
+---
+
+packages:
+  - 'sudo'
+  - 'vim'
+  - 'tcpdump'
+  - 'dnsutils'
+  - 'less'
+  - 'tmux'
+  - 'git-core'
+  - 'pyflakes'
+  - 'python-pip'
+  - 'python-virtualenv'
+  - 'ntp'
+
+# daemons:
