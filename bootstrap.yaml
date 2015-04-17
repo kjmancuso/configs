@@ -47,6 +47,10 @@
       lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
       notify: restart ssh
 
+    - name: Disallow password auth
+      lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication yes" state=present
+      notify: restart ssh
+
   handlers:
     - name: restart server
       command: /sbin/reboot -t now
