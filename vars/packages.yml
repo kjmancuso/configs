@@ -12,5 +12,6 @@ packages:
   - 'python-pip'
   - 'python-virtualenv'
   - 'ntp'
+  - 'curl'
 
 # daemons:
