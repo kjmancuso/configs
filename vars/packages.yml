@@ -13,5 +13,6 @@ packages:
   - 'python-virtualenv'
   - 'ntp'
   - 'curl'
+  - 'apt-transport-https'
 
 # daemons:
