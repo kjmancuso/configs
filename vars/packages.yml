@@ -14,5 +14,6 @@ packages:
   - 'ntp'
   - 'curl'
   - 'apt-transport-https'
+  - 'mosh'
 
 # daemons:
